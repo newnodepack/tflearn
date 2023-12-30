@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="134.99687mm"
+   height="26.13295mm"
+   viewBox="0 0 134.99687 26.13295"
+   version="1.1"
+   id="svg5"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false" />
+  <defs
+     id="defs2">
+    <rect
+       x="329.53503"
+       y="673.51178"
+       width="712.8985"
+       height="169.36263"
+       id="rect1189" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-37.437486,-135.43351)">
+    <g
+       id="g1297"
+       transform="translate(0,-51.9131)"
+       inkscape:export-filename="g1297.svg"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <path
+         id="path238"
+         style="fill:#0066ff;fill-opacity:1;stroke:none;stroke-width:0.759639;stroke-linecap:square;paint-order:markers stroke fill"
+         d="m 37.457253,187.67709 c -0.0065,1.55713 -0.01302,3.11424 -0.01977,4.67137 2.942276,1.82005 5.884511,3.64018 8.82677,5.46028 0,3.78618 0,7.57235 0,11.35853 1.340948,1.43769 2.682113,2.87513 4.023518,4.31231 0,-5.98766 0,-11.97532 0,-17.963 -4.276726,-2.65831 -8.553325,-5.31686 -12.829975,-7.97532 -1.8e-4,0.0452 -3.61e-4,0.0906 -5.25e-4,0.13588 z" />
+      <path
+         id="path238-9"
+         style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.759639;stroke-linecap:square;paint-order:markers stroke fill"
+         d="m 64.296651,187.41484 c -4.240081,2.63562 -8.480125,5.27133 -12.720284,7.90682 0,5.98767 0,11.97535 0,17.96301 1.341402,-1.4372 2.682573,-2.87464 4.023521,-4.31233 0,-1.33526 0,-2.67053 0,-4.0058 2.938834,-1.82867 5.87756,-3.65757 8.816473,-5.4861 0,-1.57444 0,-3.14888 0,-4.72333 -2.938719,1.82301 -5.877668,3.64558 -8.816473,5.4684 0,-0.87056 0,-1.74114 0,-2.61171 2.942165,-1.81998 5.884312,-3.64001 8.826495,-5.45998 -0.0068,-1.6024 -0.01334,-3.2048 -0.02005,-4.8072 -0.03658,0.0228 -0.07313,0.0456 -0.109695,0.0682 z" />
+    </g>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-16.673684,-43.317826)"
+       id="text1187"
+       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:90px;font-family:Pretendard;-inkscape-font-specification:'Pretendard, Semi-Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect1189);fill:#7137c8;fill-opacity:1;stroke:none;stroke-width:20;stroke-linecap:square;paint-order:markers stroke fill"><tspan
+         x="329.53516"
+         y="756.80397"
+         id="tspan1377"><tspan
+           style="fill:#1a1a1a"
+           id="tspan1375">TFLEARN</tspan></tspan></text>
+  </g>
+</svg>

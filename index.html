@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, please refer to the docs:
+            https://cordova.apache.org/docs/en/latest/
+        Some notes:
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 
+            https://cdn.jsdelivr.net/ 
+            https://www.gstatic.com 
+            data: https://ssl.gstatic.com 'unsafe-eval';
+            style-src 'self' https://www.gstatic.com/ 'unsafe-inline';
+            media-src *; img-src 'self' data: content:;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <link rel="stylesheet" href="./fonts/pretendard.css">
+        <link rel="stylesheet" href="./css/index.css">
+        <link rel="icon" href="./img/tflearn.png" type="image/x-icon">
+        <title>TFLearn - 텐서플로우(Tensorflow.js) 예제 및 학습 사이트</title>
+        <meta name="description" content="Tensorflow.js 라이브러리를 이용해 머신러닝의 구조를 이해하고 웹에서 직접 학습시켜 볼 수 있습니다. 자바스크립트 언어로 머신러닝의 기초를 배워보세요!">
+        <meta name="keywords" content="tensorflow,machinelearning,ml,Tensorflow.js,javascript,머신러닝,텐서플로우,텐서플로">
+        <meta name="author" content="Seungcheol Baek">
+        <meta property="og:url" content="https://" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="TFLearn - 텐서플로우(Tensorflow.js) 예제 및 학습 사이트" />
+        <meta property="og:description" content="Tensorflow.js 라이브러리를 이용해 머신러닝의 구조를 이해하고 웹에서 직접 학습시켜 볼 수 있습니다. 자바스크립트 언어로 머신러닝의 기초를 배워보세요!" />
+        <meta property="og:image" content="./img/tflearn.svg" />
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    </head>
+    <body>
+        <header>
+            <div id="site_logo">
+                <img id="site_logo_img" src="./img/tflearn.svg" alt="tflearn website SVG Image">
+                <div id="site_navigation">
+                    <a class="site_breadCrumb">HOME</a>
+                </div>
+            </div>
+            <div id="site_icon">
+                <span class="material-symbols-outlined" id="site_menu_icon">
+                    menu
+                </span>
+            </div>
+        </header>
+        <div id="app">
+            <div id="full_size_frame">
+                <div id="main_ment_frame">
+                    <h1 id="site_main_h1">
+                        <span>학습목표 : </span>
+                        기본적인 Tensorflow 머신러닝의 구조에 대해서 이해합니다.
+                    </h1>
+                </div>
+                <div id="content_layout">
+                    <div id="layout_line_1">
+                        <div id="layout_box_1">
+                            <h3 class="layout_box_title">
+                                Try Meachine Learning
+                            </h3>
+                            <h2 class="layout_box_h2_comment">정해진 수(Epoch) 만큼 텐서플로우에서 y=2x-1 이라는 방정식을 학습한 뒤, x값을 넣어 결과를 확인합니다.</h2>
+                            <div class="layout_box_contents">
+                                <input type="number" class="input_param_number" id="input_item_number" placeholder="임의의 수(x값)를 입력해 주세요"/>
+                                <select id="select_epoch">
+                                    <option value="200">200</option>
+                                    <option value="250">250</option>
+                                    <option value="300">300</option>
+                                    <option value="350">350</option>
+                                    <option value="400">400</option>
+                                </select>
+                                <button type="button" id="do_education">학습하기</button>
+                            </div>
+                        </div>
+                        <div class="empty_space_24"></div>
+                        <div id="layout_box_2">
+                            <h3 class="layout_box_title">
+                                Tensorflow.js Javascript Code
+                            </h3>
+                            <h2 class="layout_box_h2_comment">위 기능은 다음과 같은 코드로 되어 있습니다.</h2>
+                            <div class="layout_box_contents" id="box_contents_black">
+                                <p class="box_content_line boxline_green">
+                                    // 간단한 모델 레이아웃을 하나 만듭니다.
+                                </p>
+                                <p class="box_content_line boxline_code">
+                                    const model = tf.sequential();
+                                </p>
+                                <p class="box_content_line boxline_code">
+                                    model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+                                </p>
+                                <div class="line_spacing_16"></div>
+                                <p class="box_content_line boxline_green">
+                                    // 학습할 모델의 설정값을 적용합니다.
+                                </p>
+                                <p class="box_content_line boxline_code">
+                                    model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
+                                </p>
+                                <div class="line_spacing_16"></div>
+                                <p class="box_content_line boxline_green">
+                                    // X 축과 Y축을 설정해 학습 목표를 지정합니다. (y = 2x - 1)
+                                </p>
+                                <p class="box_content_line boxline_code">
+                                    const xs = tf.tensor2d([-1, 0, 1, 2, 3, 4], [6, 1]);
+                                </p>
+                                <p class="box_content_line boxline_code">
+                                    const ys = tf.tensor2d([-3, -1, 1, 3, 5, 7], [6, 1]);
+                                </p>
+                                <div class="line_spacing_16"></div>
+                                <p class="box_content_line boxline_code">
+                                    const click_btn = document.getElementById(`do_education`);
+                                </p>
+                                <p class="box_content_line boxline_function">
+                                    click_btn.addEventListener(`click`,async () =>{
+                                </p>
+                                <p class="box_content_line boxline_green code_indent_1">
+                                    // 사용자가 입력한 값을 숫자로 가져오고
+                                </p>
+                                <p class="box_content_line boxline_code code_indent_1">
+                                    const input_item_number = parseInt(document.getElementById(`input_item_number`).value, 10);
+                                </p>
+                                <p class="box_content_line boxline_code code_indent_1">
+                                    const input_item_epoch = parseInt(document.getElementById(`select_epoch`).value, 10);
+                                </p>
+                                <div class="line_spacing_16"></div>
+                                <p class="box_content_line boxline_green code_indent_1">
+                                    // 설정한 x,y축으로 정해진 수(에포크)만큼 학습을 진행한 뒤, 
+                                </p>
+                                <p class="box_content_line boxline_code code_indent_1">
+                                    await model.fit(xs, ys, {epochs: input_item_epoch});
+                                </p>
+                                <div class="line_spacing_16"></div>
+                                <p class="box_content_line boxline_green code_indent_1">
+                                    // 자바스크립트로 p 태그를 하나 만든 다음,
+                                </p>
+                                <p class="box_content_line boxline_code code_indent_1">
+                                    const newParagraph = document.createElement(`p`);
+                                </p>
+                                <p class="box_content_line boxline_code code_indent_1">
+                                    newParagraph.className = `training_result`;
+                                </p>
+                                <p class="box_content_line boxline_code code_indent_1">
+                                    const resultTag = document.getElementById(`action_results`);
+                                </p>
+                                <div class="line_spacing_16"></div>
+                                <p class="box_content_line boxline_green code_indent_1">
+                                    // 학습한 모델에 입력한 x값 하나를 넣고 출력합니다.
+                                </p>
+                                <p class="box_content_line boxline_code code_indent_1">
+                                    const trainResult = model.predict(tf.tensor2d([input_item_number], [1, 1])).dataSync();
+                                </p>
+                                <p class="box_content_line boxline_code code_indent_1">
+                                    newParagraph.textContent = `${input_item_epoch}번 학습한 결과 : ${trainResult}`;
+                                </p>
+                                <p class="box_content_line boxline_code code_indent_1">
+                                    resultTag.appendChild(newParagraph);
+                                </p>
+                                <p class="box_content_line boxline_function">
+                                    });
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="layout_line_2">
+                        <div id="layout_box_3">
+                            <h3 class="layout_box_title">
+                                ML results
+                            </h3>
+                            <h2 class="layout_box_h2_comment">
+                                결과가 표시됩니다. 학습을 반복 할수록 목표치에 가까워 집니다.
+                            </h2>
+                            <div class="layout_box_contents">
+                                <div id="action_results">
+    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="empty_space_24"></div>
+                        <div id="layout_box_4">
+                            <h3 class="layout_box_title">
+                                Training Sample Graph
+                            </h3>
+                            <h2 class="layout_box_h2_comment">
+                                해당 머신러닝 예제는 아래와 같은 그래프 작업을 정해진 수(Epoch)만큼 실행하여 학습합니다. 
+                            </h2>
+                            <div class="layout_box_contents" id="box_contents_white">
+                                <div id="curve_chart">
+    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="footer_frame">
+                    <div id="footer_layout">
+                        &copy; <span id="currentYear"></span> TFLearn. All Rights Reserved.
+                    </div>
+                </div>
+            </div>
+            <div id="sidebar_black_frame">
+                <div id="sidebar_layout">
+                    <p id="sidemenu_title">다른 ML 예제 보기</p>
+                    <nav class="sidebar_layout_nav">
+                        <a class="sidebar_layout_a" href="./index.html">
+                            <span class="page_nav_name">Basic Example</span>
+                            <span class="material-symbols-outlined page_nav_icon">
+                                chevron_right
+                            </span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <script src="cordova.js"></script>
+        <script src="js/index.js"></script>
+        <script src="js/firstLearn.js"></script>
+    </body>
+</html>
