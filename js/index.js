@@ -1,7 +1,11 @@
+let isWeb = false;
 const onDeviceReady = () => {
     // Cordova is now initialized. Have fun!
-
+    if(cordova.platformId == `browser`){
+        isWeb = true;
+    }
     console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
+    console.log(isWeb);
 }
 
 document.addEventListener('deviceready', onDeviceReady, false);

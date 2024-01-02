@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 
+            data: https://ssl.gstatic.com 'unsafe-eval';
+            style-src 'self' https://www.gstatic.com/ 'unsafe-inline';
+            script-src-elem 'self' https://cdn.jsdelivr.net https://www.gstatic.com https://*.googletagmanager.com 'nonce-846953' 'unsafe-eval';
+            media-src *; 
+            img-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com
+            https://*.g.doubleclick.net https://*.google.com;
+            connect-src https://*.google-analytics.com https://*.analytics.google.com
+            https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <link rel="stylesheet" href="./fonts/pretendard.css">
+        <link rel="stylesheet" href="./css/hand_writing.css">
+        <link rel="icon" href="./img/tflearn.png" type="image/x-icon">
+        <title>TFLearn - 텐서플로우(Tensorflow.js)에서 필기체로 적은 숫자를 인식해보기</title>
+        <meta name="description" content="Tensorflow.js 라이브러리로 사용자가 올린 필기체를 인식할 수 있습니다. 자바스크립트 언어로 머신러닝의 동작원리를 배워보세요!">
+        <meta name="keywords" content="tensorflow,machinelearning,ml,Tensorflow.js,javascript,머신러닝,텐서플로우,텐서플로">
+        <meta name="author" content="Seungcheol Baek">
+        <meta property="og:url" content="https://tflearn.co.kr" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="TFLearn - 텐서플로우(Tensorflow.js)에서 필기체를 인식하는 예제" />
+        <meta property="og:description" content="Tensorflow.js 라이브러리로 사용자가 올린 필기체를 인식할 수 있습니다. 자바스크립트 언어로 머신러닝의 동작원리를 배워보세요!" />
+        <meta property="og:image" content="./img/tflearn.svg" />
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-RGGNBT0XPS"></script>
+        <script nonce="846953">
+            var inline = 1;
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;var n=d.querySelector('[nonce]');
+            n&&j.setAttribute('nonce',n.nonce||n.getAttribute('nonce'));f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','G-RGGNBT0XPS');
+            /*
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-RGGNBT0XPS');
+            */
+        </script>
+    </head>
+    <body>
+        <header>
+            <div id="site_logo">
+                <img id="site_logo_img" src="./img/tflearn.svg" alt="tflearn website SVG Image">
+                <div id="site_navigation">
+                    <a class="site_breadCrumb">HandWriting</a>
+                </div>
+            </div>
+            <div id="site_icon">
+                <span class="material-symbols-outlined" id="site_menu_icon">
+                    menu
+                </span>
+            </div>
+        </header>
+        <div id="app">
+            <div id="full_size_frame">
+                <div id="main_ment_frame">
+                    <h1 id="site_main_h1">
+                        <span>학습목표 : </span>
+                        Tensorflow.js 에서 CNN 신경망을 이용해 손으로 쓴 글씨를 인식하도록 만듭니다.
+                    </h1>
+                </div>
+                <div id="content_layout">
+                    <div id="layout_line_1">
+                        
+                        <div class="empty_space_24"></div>
+
+                    </div>
+                    <div id="layout_line_2">
+                        
+                    </div>
+                </div>
+                <div id="footer_frame">
+                    <div id="footer_layout">
+                        &copy; <span id="currentYear"></span> TFLearn. All Rights Reserved.
+                    </div>
+                </div>
+            </div>
+            <div id="sidebar_black_frame">
+                <div id="sidebar_layout">
+                    <p id="sidemenu_title">다른 ML 예제 보기</p>
+                    <!-- 이동 메뉴 추가 -->
+                    <nav class="sidebar_layout_nav">
+                        <a class="sidebar_layout_a" href="./index.html">
+                            <span class="page_nav_name">Basic Example</span>
+                            <span class="material-symbols-outlined page_nav_icon">
+                                chevron_right
+                            </span>
+                        </a>
+                    </nav>
+                    <nav class="sidebar_layout_nav">
+                        <a class="sidebar_layout_a" href="./hand_writing.html">
+                            <span class="page_nav_name">Handwriting recognition</span>
+                            <span class="material-symbols-outlined page_nav_icon">
+                                chevron_right
+                            </span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <script src="cordova.js"></script>
+        <script src="js/hand_writing.js" type="module"></script>
+        <script src="js/secondLearn.js" type="module"></script>
+    </body>
+</html>

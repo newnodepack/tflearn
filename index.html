@@ -12,11 +12,14 @@
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
         <meta http-equiv="Content-Security-Policy" content="default-src 'self' 
-            https://cdn.jsdelivr.net/ 
-            https://www.gstatic.com 
             data: https://ssl.gstatic.com 'unsafe-eval';
             style-src 'self' https://www.gstatic.com/ 'unsafe-inline';
-            media-src *; img-src 'self' data: content:;">
+            script-src-elem 'self' https://cdn.jsdelivr.net https://www.gstatic.com https://*.googletagmanager.com 'nonce-846953' 'unsafe-eval';
+            media-src *; 
+            img-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com
+            https://*.g.doubleclick.net https://*.google.com;
+            connect-src https://*.google-analytics.com https://*.analytics.google.com
+            https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com;">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
@@ -37,12 +40,21 @@
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-RGGNBT0XPS"></script>
-        <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+        <script nonce="846953">
+            var inline = 1;
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;var n=d.querySelector('[nonce]');
+            n&&j.setAttribute('nonce',n.nonce||n.getAttribute('nonce'));f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','G-RGGNBT0XPS');
+            /*
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
 
-        gtag('config', 'G-RGGNBT0XPS');
+            gtag('config', 'G-RGGNBT0XPS');
+            */
         </script>
     </head>
     <body>
@@ -213,9 +225,18 @@
             <div id="sidebar_black_frame">
                 <div id="sidebar_layout">
                     <p id="sidemenu_title">다른 ML 예제 보기</p>
+                    <!-- 이동 메뉴 추가 -->
                     <nav class="sidebar_layout_nav">
                         <a class="sidebar_layout_a" href="./index.html">
                             <span class="page_nav_name">Basic Example</span>
+                            <span class="material-symbols-outlined page_nav_icon">
+                                chevron_right
+                            </span>
+                        </a>
+                    </nav>
+                    <nav class="sidebar_layout_nav">
+                        <a class="sidebar_layout_a" href="./hand_writing.html">
+                            <span class="page_nav_name">Handwriting recognition</span>
                             <span class="material-symbols-outlined page_nav_icon">
                                 chevron_right
                             </span>
