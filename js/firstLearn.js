@@ -5,9 +5,9 @@ model.add(tf.layers.dense({units: 1, inputShape: [1]}));
 // 학습할 모델의 설정값을 적용합니다.
 model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
 
-// X 축과 Y축을 설정해 학습 목표를 지정합니다. (y = 2x - 1)
-const xs = tf.tensor2d([-1, 0, 1, 2, 3, 4], [6, 1]);
-const ys = tf.tensor2d([-3, -1, 1, 3, 5, 7], [6, 1]);
+// X 축과 Y축을 설정해 학습 목표를 지정합니다. (√x = y)
+const xs = tf.tensor2d([0, 1, 2, 3, 4, 5, 6, 7], [8, 1]);
+const ys = tf.tensor2d([0, 1, 1.41421356, 1.73205080, 2, 2.23606797, 2.44948974, 2.64575131], [8, 1]);
 
 const click_btn = document.getElementById(`do_education`);
 click_btn.addEventListener(`click`,async () =>{

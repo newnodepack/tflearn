@@ -9,9 +9,9 @@
             script-src-elem 'self' https://cdn.jsdelivr.net https://www.gstatic.com https://*.googletagmanager.com 'nonce-846953' 'unsafe-eval';
             media-src *; 
             img-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com
-            https://*.g.doubleclick.net https://*.google.com;
+            https://*.g.doubleclick.net https://*.google.com  https://storage.googleapis.com;
             connect-src https://*.google-analytics.com https://*.analytics.google.com
-            https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com;">
+            https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com  https://storage.googleapis.com;">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
@@ -71,12 +71,41 @@
                         <span>학습목표 : </span>
                         Tensorflow.js 에서 CNN 신경망을 이용해 손으로 쓴 글씨를 인식하도록 만듭니다.
                     </h1>
+                    <h2 id="site_main_h2">Wait for seconds.......</h2>
                 </div>
                 <div id="content_layout">
                     <div id="layout_line_1">
-                        
+                        <div id="layout_box_1" class="shadow_style_1">
+                            <h3 class="layout_box_title">
+                                Input Data
+                            </h3>
+                            <h3 class="layout_box_h3_comment">
+                                아래의 학습용 샘플 이미지로 부터 몇가지를 뽑아 옵니다.
+                            </h3>
+                            <div class="layout_box_img_frame">
+                                <img class="very_long_img" src="https://storage.googleapis.com/learnjs-data/model-builder/mnist_images.png" alt="구글에서 제공하는 샘플 학습용 이미지"/>
+                            </div>
+                        </div>
                         <div class="empty_space_24"></div>
-
+                        <div id="layout_box_2" class="shadow_style_1">
+                            <h3 class="layout_box_title">
+                                Models
+                            </h3>
+                            <h3 class="layout_box_h3_comment">
+                                이미지 인식을 위한 훈련 모델을 만듭니다.
+                            </h3>
+                            
+                        </div>
+                        <div class="empty_space_24"></div>
+                        <div id="layout_box_3" class="shadow_style_1">
+                            <h3 class="layout_box_title">
+                                Evaluation
+                            </h3>
+                            <h3 class="layout_box_h3_comment">
+                                훈련한 모델을 기반으로 결과값을 표시해 줍니다.
+                            </h3>
+                            
+                        </div>
                     </div>
                     <div id="layout_line_2">
                         
@@ -112,7 +141,7 @@
             </div>
         </div>
         <script src="cordova.js"></script>
-        <script src="js/hand_writing.js" type="module"></script>
         <script src="js/secondLearn.js" type="module"></script>
+        <script src="js/hand_writing.js" type="module"></script>
     </body>
 </html>

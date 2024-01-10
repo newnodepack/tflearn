@@ -30,16 +30,18 @@ const drawChart = () => {
 
     const data = google.visualization.arrayToDataTable([
         ['입력값', '입력값, 결과값'],
-        ['-1',-3],
-        ['0',-1],
+        ['0',0],
         ['1',1],
-        ['2',3],
-        ['3',5],
-        ['4',7],
+        ['2',1.41421356],
+        ['3',1.73205080],
+        ['4',2],
+        ['5',2.23606797],
+        ['6',2.44948974],
+        ['7',2.64575131],
     ]);
 
     const options = {
-        title: 'y = 2x - 1',
+        title: '√x = y',
         hAxis: {title: 'x Value', minValue: -5, maxValue: 15},
         vAxis: {title: 'y Value', minValue: -1, maxValue: 15},
         legend: 'none',
