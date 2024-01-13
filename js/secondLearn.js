@@ -1,20 +1,3 @@
-/**
- * @license
- * Copyright 2018 Google LLC. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * =============================================================================
- */
-
 // 훈련에 사용할 이미지 규격을 설정
 const IMAGE_SIZE = 784;
 const NUM_CLASSES = 10;
@@ -36,8 +19,9 @@ export class MnistData {
     this.shuffledTestIndex = 0;
   }
 
+  // 구글에서 제공하는 이미지(784X65000)를 캔버스로 가져오고 자바스크립트 내에서
+  // 쓸 수 있도록 만드는 것이 MnistData의 역할
   async load() {
-    // Make a request for the MNIST sprited image.
     const img = new Image();
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -65,8 +49,6 @@ export class MnistData {
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
           for (let j = 0; j < imageData.data.length / 4; j++) {
-            // All channels hold an equal value since the image is grayscale, so
-            // just read the red channel.
             datasetBytesView[j] = imageData.data[j * 4] / 255;
           }
         }
@@ -83,12 +65,11 @@ export class MnistData {
 
     this.datasetLabels = new Uint8Array(await labelsResponse.arrayBuffer());
 
-    // Create shuffled indices into the train/test set for when we select a
-    // random dataset element for training / validation.
+    // 분할한 이미지를 학습에 쓸 수 있도록 담는 선언 코드
     this.trainIndices = tf.util.createShuffledIndices(NUM_TRAIN_ELEMENTS);
     this.testIndices = tf.util.createShuffledIndices(NUM_TEST_ELEMENTS);
 
-    // Slice the the images and labels into train and test sets.
+    // 이미지를 각 학습 자료 별로 나누는 코드
     this.trainImages =
         this.datasetImages.slice(0, IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
     this.testImages = this.datasetImages.slice(IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
@@ -98,6 +79,7 @@ export class MnistData {
         this.datasetLabels.slice(NUM_CLASSES * NUM_TRAIN_ELEMENTS);
   }
 
+  // 나뉘어진 이미지를 학습하는 함수
   nextTrainBatch(batchSize) {
     return this.nextBatch(
         batchSize, [this.trainImages, this.trainLabels], () => {
@@ -107,6 +89,7 @@ export class MnistData {
         });
   }
 
+  // 나뉘어진 이미지를 테스트 해보는 함수
   nextTestBatch(batchSize) {
     return this.nextBatch(batchSize, [this.testImages, this.testLabels], () => {
       this.shuffledTestIndex =

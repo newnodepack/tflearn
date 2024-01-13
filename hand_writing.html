@@ -85,6 +85,147 @@
                             <div class="layout_box_img_frame">
                                 <img class="very_long_img" src="https://storage.googleapis.com/learnjs-data/model-builder/mnist_images.png" alt="구글에서 제공하는 샘플 학습용 이미지"/>
                             </div>
+                            <div class="simple_code_box">
+                                <pre>
+<span class="pre_span_green">// 이 코드에서 작업을 순서대로 실행합니다.</span>
+async function run() {
+  const data = new MnistData(); // 객체 지향 형태로 클래스 호출
+  await data.load(); // 1. 샘플이미지로 학습 하고 학습한 모델을 data 내에 저장합니다.
+  await showExamples(data); // 약 20개 정도만 학습된 데이터에 집어 넣고 샘플 모델로 만들어내어 사용자에게 표시합니다.
+  const model = getModel(); // 본격적으로 모델을 생성
+  tfvis.show.modelSummary({name: 'Model Architecture', tab: 'Model'}, model); // tfvisor라는 레이아웃에 모델을 표시할 틀을 생성
+  await train(model, data); // 만들어진 모델과 샘플로 본격적인 훈련작업에 돌입
+  await showAccuracy(model, data); // 적중률과 오차율을 표시
+  await showConfusion(model, data);// 훈련한 결과물을 사용자가 볼 수 있도록 표시합니다.
+}
+                                </pre>
+                            </div>
+                            <div class="simple_code_box">
+                                <pre>
+// 1. 훈련에 사용할 이미지 규격을 설정
+const IMAGE_SIZE = 784;
+const NUM_CLASSES = 10;
+const NUM_DATASET_ELEMENTS = 65000;
+
+const TRAIN_TEST_RATIO = 5 / 6;
+
+const NUM_TRAIN_ELEMENTS = Math.floor(TRAIN_TEST_RATIO * NUM_DATASET_ELEMENTS);
+const NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
+// 훈련에 사용할 데이터 이미지를 하나의 긴 이미지로 합쳐서 구글에서 가져옵니다.
+const MNIST_IMAGES_SPRITE_PATH =
+    'https://storage.googleapis.com/learnjs-data/model-builder/mnist_images.png';
+const MNIST_LABELS_PATH =
+    'https://storage.googleapis.com/learnjs-data/model-builder/mnist_labels_uint8';
+
+export class MnistData {
+    constructor() {
+        this.shuffledTrainIndex = 0;
+        this.shuffledTestIndex = 0;
+    }
+
+    // 구글에서 제공하는 이미지(784X65000)를 캔버스로 가져오고 자바스크립트 내에서
+    // 쓸 수 있도록 만드는 것이 MnistData의 역할
+    async load() {
+        const img = new Image();
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const imgRequest = new Promise((resolve, reject) => {
+        img.crossOrigin = '';
+        img.onload = () => {
+            img.width = img.naturalWidth;
+            img.height = img.naturalHeight;
+
+            const datasetBytesBuffer =
+                new ArrayBuffer(NUM_DATASET_ELEMENTS * IMAGE_SIZE * 4);
+
+            const chunkSize = 5000;
+            canvas.width = img.width;
+            canvas.height = chunkSize;
+
+            for (let i = 0; i < NUM_DATASET_ELEMENTS / chunkSize; i++) {
+            const datasetBytesView = new Float32Array(
+                datasetBytesBuffer, i * IMAGE_SIZE * chunkSize * 4,
+                IMAGE_SIZE * chunkSize);
+            ctx.drawImage(
+                img, 0, i * chunkSize, img.width, chunkSize, 0, 0, img.width,
+                chunkSize);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            for (let j = 0; j < imageData.data.length / 4; j++) {
+                datasetBytesView[j] = imageData.data[j * 4] / 255;
+            }
+            }
+            this.datasetImages = new Float32Array(datasetBytesBuffer);
+
+            resolve();
+        };
+        img.src = MNIST_IMAGES_SPRITE_PATH;
+        });
+
+        const labelsRequest = fetch(MNIST_LABELS_PATH);
+        const [imgResponse, labelsResponse] =
+            await Promise.all([imgRequest, labelsRequest]);
+
+        this.datasetLabels = new Uint8Array(await labelsResponse.arrayBuffer());
+
+        // 분할한 이미지를 학습에 쓸 수 있도록 담는 선언 코드
+        this.trainIndices = tf.util.createShuffledIndices(NUM_TRAIN_ELEMENTS);
+        this.testIndices = tf.util.createShuffledIndices(NUM_TEST_ELEMENTS);
+
+        // 이미지를 각 학습 자료 별로 나누는 코드
+        this.trainImages =
+            this.datasetImages.slice(0, IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
+        this.testImages = this.datasetImages.slice(IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
+        this.trainLabels =
+            this.datasetLabels.slice(0, NUM_CLASSES * NUM_TRAIN_ELEMENTS);
+        this.testLabels =
+            this.datasetLabels.slice(NUM_CLASSES * NUM_TRAIN_ELEMENTS);
+    }
+
+    // 나뉘어진 이미지를 학습하는 함수
+    nextTrainBatch(batchSize) {
+        return this.nextBatch(
+            batchSize, [this.trainImages, this.trainLabels], () => {
+            this.shuffledTrainIndex =
+                (this.shuffledTrainIndex + 1) % this.trainIndices.length;
+            return this.trainIndices[this.shuffledTrainIndex];
+            });
+    }
+
+    // 나뉘어진 이미지를 테스트 해보는 함수
+    nextTestBatch(batchSize) {
+        return this.nextBatch(batchSize, [this.testImages, this.testLabels], () => {
+        this.shuffledTestIndex =
+            (this.shuffledTestIndex + 1) % this.testIndices.length;
+        return this.testIndices[this.shuffledTestIndex];
+        });
+    }
+
+    nextBatch(batchSize, data, index) {
+        const batchImagesArray = new Float32Array(batchSize * IMAGE_SIZE);
+        const batchLabelsArray = new Uint8Array(batchSize * NUM_CLASSES);
+
+        for (let i = 0; i < batchSize; i++) {
+        const idx = index();
+
+        const image =
+            data[0].slice(idx * IMAGE_SIZE, idx * IMAGE_SIZE + IMAGE_SIZE);
+        batchImagesArray.set(image, i * IMAGE_SIZE);
+
+        const label =
+            data[1].slice(idx * NUM_CLASSES, idx * NUM_CLASSES + NUM_CLASSES);
+        batchLabelsArray.set(label, i * NUM_CLASSES);
+        }
+
+        const xs = tf.tensor2d(batchImagesArray, [batchSize, IMAGE_SIZE]);
+        const labels = tf.tensor2d(batchLabelsArray, [batchSize, NUM_CLASSES]);
+
+        return {xs, labels};
+    }
+}
+                                </pre>
+                            </div>
                         </div>
                         <div class="empty_space_24"></div>
                         <div id="layout_box_2" class="shadow_style_1">
@@ -94,7 +235,136 @@
                             <h3 class="layout_box_h3_comment">
                                 이미지 인식을 위한 훈련 모델을 만듭니다.
                             </h3>
-                            
+                            <div class="simple_code_box">
+                                <pre>
+async function showExamples(data) {
+    // tfvisor 이라고 불리는 라이브러리를 사용해 데이터를 보여줄 준비를 합니다.
+    const surface =
+        tfvis.visor().surface({ name: 'Input Data 예제', tab: 'Input Data'});
+    
+    
+    // 학습된 데이터를 사용하여 샘플 데이터를 만들어냅니다.
+    const examples = data.nextTestBatch(20);
+    const numExamples = examples.xs.shape[0];
+    
+    // 만들어진 데이터를 캔버스를 사용해 28x28 픽셀 크기로 각각 만들어 tfvisor에 그려서 보여줍니다.
+    for (let i = 0; i < numExamples; i++) {
+        const imageTensor = tf.tidy(() => {
+        // Reshape the image to 28x28 px
+        return examples.xs
+            .slice([i, 0], [1, examples.xs.shape[1]])
+            .reshape([28, 28, 1]);
+        });
+    
+        const canvas = document.createElement('canvas');
+        canvas.width = 28;
+        canvas.height = 28;
+        canvas.style = 'margin: 4px;';
+        await tf.browser.toPixels(imageTensor, canvas);
+        surface.drawArea.appendChild(canvas);
+    
+        imageTensor.dispose();
+    }
+}
+                                </pre>
+                            </div>
+                            <div class="simple_code_box">
+                                <pre>
+document.addEventListener('DOMContentLoaded', run);
+
+// 샘플로 만든 이미지를 가지고 본격적으로 쓸 모델을 만듭니다.
+function getModel() {
+    const model = tf.sequential();
+
+    const IMAGE_WIDTH = 28;
+    const IMAGE_HEIGHT = 28;
+    const IMAGE_CHANNELS = 1;
+
+    model.add(tf.layers.conv2d({
+    inputShape: [IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS],
+    kernelSize: 5,
+    filters: 8,
+    strides: 1,
+    activation: 'relu',
+    kernelInitializer: 'varianceScaling'
+    }));
+
+
+    model.add(tf.layers.maxPooling2d({poolSize: [2, 2], strides: [2, 2]}));
+
+
+    model.add(tf.layers.conv2d({
+    kernelSize: 5,
+    filters: 16,
+    strides: 1,
+    activation: 'relu',
+    kernelInitializer: 'varianceScaling'
+    }));
+    model.add(tf.layers.maxPooling2d({poolSize: [2, 2], strides: [2, 2]}));
+
+    // 모델을 인식하기 위해 단순화 하는 작업
+    model.add(tf.layers.flatten());
+
+    const NUM_OUTPUT_CLASSES = 10;
+    model.add(tf.layers.dense({
+    units: NUM_OUTPUT_CLASSES,
+    kernelInitializer: 'varianceScaling',
+    activation: 'softmax'
+    }));
+
+    // 결과를 최적화하기 위한 옵티마이저를 설정합니다.
+    const optimizer = tf.train.adam();
+    model.compile({
+    optimizer: optimizer,
+    loss: 'categoricalCrossentropy',
+    metrics: ['accuracy'],
+    });
+
+    // 생성된 모델을 반환합니다.
+    return model;
+}
+                                </pre>
+                            </div>
+                            <div class="simple_code_box">
+                                <pre>
+// 집어넣은 모델로 훈련한 결과를 tfvisor 에 표시합니다.
+async function train(model, data) {
+  const metrics = ['loss', 'val_loss', 'acc', 'val_acc'];
+  const container = {
+    name: 'Model Training', tab: 'Model', styles: { height: '1000px' }
+  };
+  const fitCallbacks = tfvis.show.fitCallbacks(container, metrics);
+
+  const BATCH_SIZE = 512;
+  const TRAIN_DATA_SIZE = 5500;
+  const TEST_DATA_SIZE = 1000;
+
+  const [trainXs, trainYs] = tf.tidy(() => {
+    const d = data.nextTrainBatch(TRAIN_DATA_SIZE);
+    return [
+      d.xs.reshape([TRAIN_DATA_SIZE, 28, 28, 1]),
+      d.labels
+    ];
+  });
+
+  const [testXs, testYs] = tf.tidy(() => {
+    const d = data.nextTestBatch(TEST_DATA_SIZE);
+    return [
+      d.xs.reshape([TEST_DATA_SIZE, 28, 28, 1]),
+      d.labels
+    ];
+  });
+
+  return model.fit(trainXs, trainYs, {
+    batchSize: BATCH_SIZE,
+    validationData: [testXs, testYs],
+    epochs: 10,
+    shuffle: true,
+    callbacks: fitCallbacks
+  });
+}
+                                </pre>
+                            </div>
                         </div>
                         <div class="empty_space_24"></div>
                         <div id="layout_box_3" class="shadow_style_1">
@@ -104,13 +374,66 @@
                             <h3 class="layout_box_h3_comment">
                                 훈련한 모델을 기반으로 결과값을 표시해 줍니다.
                             </h3>
-                            
+                            <div class="simple_code_box">
+                                <pre>
+const classNames = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+
+// 훈련한 결과의 성공과 실패율을 표시
+async function showAccuracy(model, data) {
+  const [preds, labels] = doPrediction(model, data);
+  const classAccuracy = await tfvis.metrics.perClassAccuracy(labels, preds);
+  const container = {name: 'Accuracy', tab: 'Evaluation'};
+  tfvis.show.perClassAccuracy(container, classAccuracy, classNames);
+
+  labels.dispose();
+}
+
+function doPrediction(model, data, testDataSize = 500) {
+  const IMAGE_WIDTH = 28;
+  const IMAGE_HEIGHT = 28;
+  const testData = data.nextTestBatch(testDataSize);
+  const testxs = testData.xs.reshape([testDataSize, IMAGE_WIDTH, IMAGE_HEIGHT, 1]);
+  const labels = testData.labels.argMax(-1);
+  const preds = model.predict(testxs).argMax(-1);
+
+  testxs.dispose();
+  return [preds, labels];
+}
+                                </pre>
+                            </div>
+                            <div class="simple_code_box">
+                                <pre>
+// 결과 표를 tfvisor 에 렌더링 해서 표시합니다.
+async function showConfusion(model, data) {
+  const [preds, labels] = doPrediction(model, data);
+  const confusionMatrix = await tfvis.metrics.confusionMatrix(labels, preds);
+  const container = {name: 'Confusion Matrix', tab: 'Evaluation'};
+  tfvis.render.confusionMatrix(container, {values: confusionMatrix, tickLabels: classNames});
+
+  labels.dispose();
+
+  const layout_box = document.getElementById(`site_main_h2`);
+  layout_box.innerText = `Loading Complete!`;
+}
+                                </pre>
+                            </div>
                         </div>
                     </div>
                     <div id="layout_line_2">
-                        
+                        <div id="layout_box_5" class="shadow_style_1">
+                            <h3 class="layout_box_title">
+                                Reference page
+                            </h3>
+                            <h3 class="layout_box_h3_comment">
+                                아래 링크에서 참고한 코드 내용을 바탕으로 구성되었습니다.
+                            </h3>
+                            <div class="layout_box_contents">
+                                <p class="layout_box_link">https://codelabs.developers.google.com/codelabs/tfjs-training-classfication/index.html?hl=ko#2</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
                 <div id="footer_frame">
                     <div id="footer_layout">
                         &copy; <span id="currentYear"></span> TFLearn. All Rights Reserved.
